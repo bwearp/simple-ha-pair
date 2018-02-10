@@ -1,6 +1,7 @@
 # simple-ha-pair
 <em>Using ansible and an xlsx spreadsheet to set up an HA pair</em><br><br>
 Tested on BIG-IP Software version 12.1.2<br><br>
+<br> The default admin password of admin has been used<br>
 This uses the xls_to_facts.py module by Matt Mullen<br>
 https://github.com/mamullen13316/ansible_xls_to_facts
 
@@ -14,7 +15,6 @@ They will also need to be licensed and provisionned with ltm. It is possible to 
 For additional information on Ansible and F5 Ansible modules, please see:
 http://clouddocs.f5.com/products/orchestration/ansible/devel/index.html
 
-<br> The default admin password of admin has been used<br>
 
 <b>Ansible Control Machine Requirements</b>
 <br>I am using Centos, other OS are available<br><br>
