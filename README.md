@@ -3,6 +3,11 @@ Using ansible and an xlsx spreadsheet to set up an HA pair
 
 Requirements:<br>
 
+The BIG-IP devices will need to be licensed and provisionned with ltm. It is possible to both provision and lices the devices with ansible but it is not within the remit of this project.
+
+For additional information on Ansible and F5 Ansible modules, please see:
+http://clouddocs.f5.com/products/orchestration/ansible/devel/index.html
+
 You will need Python 2.7+<br><br>
 You will need pip<br>
 curl 'https://bootstrap.pypa.io/get-pip.py' > get-pip.py && sudo python get-pip.py
