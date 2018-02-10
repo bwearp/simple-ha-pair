@@ -13,8 +13,11 @@ http://clouddocs.f5.com/products/orchestration/ansible/devel/index.html
 
 
 <b>Ansible Control Machine Requirements</b>
-<br>I am using Centos, other OS are available<br><br>
+<br>I am using Centos, other OS are available<br>
+It will be easiest to carry out the below as the roor user<br><br>
 You will need Python 2.7+<br><br>
+$ yum install python
+<br>
 You will need pip<br>
 curl 'https://bootstrap.pypa.io/get-pip.py' > get-pip.py && sudo python get-pip.py
 <br><br>
@@ -30,7 +33,6 @@ You will need f5-sdk >= 3.0.9, and a few other modules
 $ pip install f5-sdk==3.0.9 bigsuds netaddr deepdiff request objectpath openpyxl
 
 You will need to create and copy a root ssh-key to <em>BOTH</em> the bigip devices<br>
-$ su<br>
 $ ssh-keygen <br>
 Accept the defaults<br>
 $ ssh-copy-id -i /root/.ssh/id_rsa.pub root@\<bigip-management-ip\><br>
