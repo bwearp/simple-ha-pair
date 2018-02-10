@@ -41,7 +41,7 @@ $ pip install f5-sdk bigsuds netaddr deepdiff request objectpath openpyxl
 You will need to create and copy a root ssh-key to <em>BOTH</em> the bigip devices<br>
 $ ssh-keygen <br>
 Accept the defaults<br>
-$ ssh-copy-id -i /root/.ssh/id_rsa.pub root@\<bigip-management-ip\><br>
+$ ssh-copy-id -i /root/.ssh/id_rsa.pub root@\<bigip-<em><b>management-ip</b></em>\><br>
 
 You will need to download the files using git - see above for git installation<br>
 $ git clone https://github.com/bwearp/simple-ha-pair/ <br>
