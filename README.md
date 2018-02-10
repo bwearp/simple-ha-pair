@@ -1,5 +1,5 @@
 # simple-ha-pair
-Using ansible and an xlsx spreadsheet to set up an HA pair<br><br>
+<em>Using ansible and an xlsx spreadsheet to set up an HA pair</em><br><br>
 This uses the xls_to_facts.py module by Matt Mullen<br>
 https://github.com/mamullen13316/ansible_xls_to_facts
 
