@@ -60,6 +60,8 @@ One device must have primary=yes and the other must have primary=no<br>
 
 I have added only Standard Virtual Servers with http, client & server ssl profiles, but hopefully it is pretty obvious from the simple-ha-pair.yml playbook how to add in others.
 
+Trunks haven't been added. This is because you can't have trunks in VE and also there is no F5 ansible module to add trunks. It could be done relatively easily using the bigip_command module, and hopefully the bigip_command examples in the simple-ha-pair.yml file will show that.
+
 I haven't added in persistence settings, as this would require a dropdown list of somekind. I will probably add it later.
 
 Automation does not sit well with complication
