@@ -4,7 +4,7 @@ Using ansible and an xlsx spreadsheet to set up an HA pair
 Requirements:<br><br>
 
 You will need ansible 2.5 <br> If it is not yet available, which it wasn't at the time of writing,  please download directly from git <br>
-$ pip install ansible
+$ pip install ansible <br>
 $ pip install --upgrade git+https://github.com/ansible/ansible.git
 <br><br>
 You will need f5-sdk >= 3.0.9, and a few other modules
