@@ -1,7 +1,7 @@
 # simple-ha-pair
 Using ansible and an xlsx spreadsheet to set up an HA pair
 
-Requirements:<br><br>
+Requirements:<br>
 
 You will need Python 2.7+<br><br>
 You will need pip<br>
