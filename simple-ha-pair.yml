@@ -165,14 +165,6 @@
     delegate_to: localhost
     with_items: "{{ spreadsheet_system_settings}}"
 
-  - name: Perform an initial sync of a device to a new device group (failing due to module issue - use tmsh instead)
-    bigip_configsync_actions:
-      server: "{{ primary_server }}"
-      device_group: sync-failover
-      sync_device_to_group: yes
-    delegate_to: localhost
-    ignore_errors: yes
-
   - name: Use tmsh to sync the device_trust_group from secondary server
     bigip_command:
       server: "{{ secondary_server }}"
