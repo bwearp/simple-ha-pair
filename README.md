@@ -49,7 +49,7 @@ $ ansible-playbook simple-ha-pair.yml
 
 NOTES:
 
-In the simple-ha-pair.xlsx spreadsheet
+In the simple-ha-pair.xlsx spreadsheet:<br>
 The HA VLAN must be called 'HA'<br>
 The settings where yes/no are required must be yes/no and not YES/NO or Yes/No<br>
 One device must have primary=yes and the other must have primary=no<br>
