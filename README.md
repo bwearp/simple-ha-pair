@@ -18,13 +18,20 @@ You will need f5-sdk >= 3.0.9, and a few other modules
 <br>
 $ pip install f5-sdk==3.0.9 bigsuds netaddr deepdiff request objectpath openpyxl
 
-You will need to download the files using git - see above for git installation<br>
-$ git clone https://github.com/bwearp/simple-ha-pair/ <br>
-
-You will need to create and copy a root ssh-key to the bigip devices<br>
+You will need to create and copy a root ssh-key to BOTH the bigip devices<br>
 $ su<br>
 $ ssh-keygen <br>
 Accept the defaults<br>
 $ ssh-copy-id -i /root/.ssh/id_rsa.pub root@\<bigip-management-ip\><br>
+
+You will need to download the files using git - see above for git installation<br>
+$ git clone https://github.com/bwearp/simple-ha-pair/ <br>
+$ cd simple-ha-pair <br>
+
+You will then need to edit the simple-ha-pair.xlsx file to your preferences
+
+Then execute the playbook
+
+$ ansible-playbook simple-ha-pair.yml
 
 
