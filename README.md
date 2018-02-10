@@ -3,11 +3,15 @@ Using ansible and an xlsx spreadsheet to set up an HA pair
 
 Requirements:<br>
 
+<u><b>BIG-IP Requirements</b></u>
 The BIG-IP devices will need to have their management IP, netmask, and management gaeway configured, as well as be licensed and provisionned with ltm. It is possible to both provision and license the devices with ansible but it is not within the remit of this project.
 
 For additional information on Ansible and F5 Ansible modules, please see:
 http://clouddocs.f5.com/products/orchestration/ansible/devel/index.html
 
+
+<u><b>Ansible Control Machine</b></u>
+I am using Centos, other OS are available<br><br>
 You will need Python 2.7+<br><br>
 You will need pip<br>
 curl 'https://bootstrap.pypa.io/get-pip.py' > get-pip.py && sudo python get-pip.py
@@ -51,7 +55,7 @@ I haven't added in persistence settings, as this would require a dropdown list o
 
 Automation does not sit well with complication
 
-To update if there are any changes, please cd to the same folder and run:
+To update if there are any changes, please cd to the same folder and run:<br>
 $ git pull
 
 
