@@ -27,7 +27,7 @@ You will need f5-sdk >= 3.0.9, and a few other modules
 <br>
 $ pip install f5-sdk==3.0.9 bigsuds netaddr deepdiff request objectpath openpyxl
 
-You will need to create and copy a root ssh-key to BOTH the bigip devices<br>
+You will need to create and copy a root ssh-key to <em>BOTH</em> the bigip devices<br>
 $ su<br>
 $ ssh-keygen <br>
 Accept the defaults<br>
