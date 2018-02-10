@@ -12,7 +12,7 @@ For additional information on Ansible and F5 Ansible modules, please see:
 http://clouddocs.f5.com/products/orchestration/ansible/devel/index.html
 
 
-<em><b>Ansible Control Machine</b></em>
+<b>Ansible Control Machine Requirements</b>
 <br>I am using Centos, other OS are available<br><br>
 You will need Python 2.7+<br><br>
 You will need pip<br>
@@ -38,6 +38,8 @@ $ ssh-copy-id -i /root/.ssh/id_rsa.pub root@\<bigip-management-ip\><br>
 You will need to download the files using git - see above for git installation<br>
 $ git clone https://github.com/bwearp/simple-ha-pair/ <br>
 $ cd simple-ha-pair <br>
+
+<em> Executing the playbook </em><br>
 
 You will then need to edit the simple-ha-pair.xlsx file to your preferences
 
