@@ -1,5 +1,6 @@
 # simple-ha-pair
 <em>Using ansible and an xlsx spreadsheet to set up an HA pair</em><br><br>
+Tested on BIG-IP Software version 12.1.2<br><br>
 This uses the xls_to_facts.py module by Matt Mullen<br>
 https://github.com/mamullen13316/ansible_xls_to_facts
 
