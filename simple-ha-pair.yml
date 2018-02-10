@@ -37,6 +37,23 @@
       hostname: "{{ item.hostname }}"
     with_items: "{{ spreadsheet_system_settings }}"
 
+  - name: set dns
+    bigip_device_dns:
+      server: "{{ item.mgmt }}"
+      name_servers: 
+        - "{{ item.dns1 }}"
+        - "{{ item.dns2 }}"
+    with_items: "{{ spreadsheet_system_settings }}"
+
+  - name: set ntp
+    bigip_device_ntp:
+      server: "{{ item.mgmt }}"
+      ntp_servers:
+        - "{{ item.ntp1 }}"
+        - "{{ item.ntp2 }}"
+        - "{{ item.ntp3 }}"
+    with_items: "{{ spreadsheet_system_settings }}"
+
   - name: Set VLANS on all devices
     bigip_vlan:
       server: "{{ item[1] }}"
