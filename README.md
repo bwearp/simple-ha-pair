@@ -19,7 +19,7 @@ You will need Python 2.7+<br>
 $ yum install python<br>
 <br>
 You will need pip<br>
-curl 'https://bootstrap.pypa.io/get-pip.py' > get-pip.py && sudo python get-pip.py
+$ curl 'https://bootstrap.pypa.io/get-pip.py' > get-pip.py && sudo python get-pip.py
 <br><br>
 You will need ansible 2.5+ <br> 
 $ pip install ansible <br>
