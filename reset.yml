@@ -18,5 +18,4 @@
       reset: yes
       save: yes
       server: "{{ item.mgmt }}"
-    delegate_to: localhost
     with_items: "{{ spreadsheet_system_settings }}"
