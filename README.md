@@ -43,7 +43,7 @@ $ cd simple-ha-pair <br>
 
 You will then need to edit the simple-ha-pair.xlsx file to your preferences
 
-Then execute the playbook
+Then execute the playbook as root
 
 $ ansible-playbook simple-ha-pair.yml
 
@@ -64,7 +64,7 @@ To update if there are any changes, please cd to the same folder and run:<br>
 $ git pull
 
 You will notice there is also a reset.yml playbook to reset the devices to factory defaults.<br>
-To run the reset.yml playbook: <br>
+To run the reset.yml playbook as root: <br>
 $ ansible-playbook reset.yml
 
 
