@@ -16,7 +16,7 @@ $ pip install --upgrade git+https://github.com/ansible/ansible.git<br>
 <br>
 You will need f5-sdk >= 3.0.9, and a few other modules
 <br>
-$ pip install f5-sdk==3.0.9 bigsuds netaddr deepdiff request objectpath
+$ pip install f5-sdk==3.0.9 bigsuds netaddr deepdiff request objectpath openpyxl
 
 
 
