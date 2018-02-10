@@ -32,12 +32,7 @@ You will need to add a few other modules
 <br>
 $ pip install f5-sdk bigsuds netaddr deepdiff request objectpath openpyxl
 <br>
-At the time of writing the default f5-sdk module is lower that the required version. It needs to be greater or equal to 3.0.9. To see the version that was installed please run:
-<br>br>
-$ pip list f5-sdk --format=columns | grep f5-sdk
-<br>
-To install 3.0.9 please run:<br><br>
-$ pip install f5-sdk==3.0.9
+
 
 You will need to create and copy a root ssh-key to <em>BOTH</em> the bigip devices<br>
 $ ssh-keygen <br>
