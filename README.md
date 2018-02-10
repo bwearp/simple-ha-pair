@@ -63,7 +63,7 @@ Automation does not sit well with complication
 To update if there are any changes, please cd to the same folder and run:<br>
 $ git pull
 
-You will notice there is also a reset.yml playbook to reset the devices to factory defaults. You will need to re-copy the root ssh keys to the devices after running the playbook if you wish to run the simpl-ha-setup.yml playbook again.<br><br>
+You will notice there is also a reset.yml playbook to reset the devices to factory defaults.<br>
 To run the reset.yml playbook: <br>
 $ ansible-playbook reset.yml
 
