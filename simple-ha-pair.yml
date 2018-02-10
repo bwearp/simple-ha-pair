@@ -1,0 +1,303 @@
+- name: Setup simple HA pair
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  environment:
+    F5_USER: "admin"
+    F5_PASSWORD: "admin"
+    F5_VALIDATE_CERTS: "no"
+    ANSIBLE_NET_SSH_KEYFILE: ./rsa_pub.id
+ 
+
+  tasks:
+  - name: Get facts from XLSX file
+    xls_to_facts:
+      src: ./simple-ha-pair.xlsx
+
+  - name: set primary_server mgmt IP variable
+    set_fact: 
+      primary_server: "{{ item.mgmt }}" 
+    with_items: "{{ spreadsheet_system_settings }}"
+    when: item.primary  == "yes" 
+
+  - debug:
+      msg: Primary Server mgmt IP is {{ primary_server }}
+
+  - name: set secondary_server mgmt IP variable
+    set_fact: 
+      secondary_server: "{{ item.mgmt }}" 
+    with_items: "{{ spreadsheet_system_settings }}"
+    when: item.primary == "no" 
+
+  - debug:
+      msg: Secondary Server mgmt IP is {{ secondary_server }}
+
+  - name: set hostnames
+    bigip_hostname:
+      server: "{{ item.mgmt }}"
+      hostname: "{{ item.hostname }}"
+    delegate_to: localhost
+    with_items: "{{ spreadsheet_system_settings }}"
+
+  - name: Set VLANS on all devices
+    bigip_vlan:
+      server: "{{ item[1] }}"
+      name: "{{ item[0].vlan_name }}"
+      tag: "{{ item[0].vlan_id }}"
+    delegate_to: localhost
+    with_nested: 
+      - "{{ spreadsheet_vlans}}"
+      - [ "{{ primary_server }}", "{{ secondary_server }}"] 
+
+  - name: Set untagged interfaces on all devices
+    bigip_vlan:
+      server: "{{ item[1] }}"
+      untagged_interface: "{{ item[0].untagged_interface }}"
+      name: "{{ item[0].vlan_name }}"
+    delegate_to: localhost
+    with_nested: 
+      - "{{ spreadsheet_vlans}}"
+      - [ "{{ primary_server }}", "{{ secondary_server }}" ] 
+    when: item[0].untagged_interface != ''
+    ignore_errors: yes
+
+  - name: Set tagged interfaces on all devices
+    bigip_vlan:
+      server: "{{ item[1] }}"
+      tagged_interface: "{{ item[0].tagged_interface }}"
+      name: "{{ item[0].vlan_name }}"
+    delegate_to: localhost
+    with_nested: 
+      - "{{ spreadsheet_vlans}}"
+      - [ "{{ primary_server }}", "{{ secondary_server }}" ] 
+    when: item[0].tagged_interface != '' 
+    ignore_errors: yes  
+
+  - name: Set non-floating self IPs on {{ primary_server }}
+    bigip_selfip:
+      server: "{{ primary_server}}"
+      name: "{{ item.primary_address }}"
+      address: "{{ item.primary_address }}"
+      netmask: "{{ item.netmask }}"
+      vlan: "{{ item.vlan }}"
+      state: "present"
+    delegate_to: localhost
+    with_items: "{{ spreadsheet_self_ips }}"
+
+  - name: Set non-floating self IPs on {{ secondary_server }}
+    bigip_selfip:
+      server: "{{ secondary_server}}"
+      name: "{{ item.secondary_address }}"
+      address: "{{ item.secondary_address }}"
+      netmask: "{{ item.netmask }}"
+      vlan: "{{ item.vlan }}"
+    delegate_to: localhost
+    with_items: "{{ spreadsheet_self_ips }}"
+
+  - name: Allow default services on HA IPs for {{ primary_server }}
+    bigip_selfip:
+      server: "{{ primary_server }}"
+      name: "{{ item.primary_address }}"
+      vlan: "HA"
+      allow_service: 
+        - default
+    delegate_to: localhost
+    with_items: "{{ spreadsheet_self_ips }}"
+    when: item.vlan == 'HA'
+
+  - name: Allow default services on HA IPs for {{ secondary_server }}
+    bigip_selfip:
+      server: "{{ secondary_server }}"
+      name: "{{ item.secondary_address }}"
+      allow_service: 
+        - default
+    delegate_to: localhost
+    with_items: "{{ spreadsheet_self_ips }}"
+    when: item.vlan == 'HA'
+
+  - name: Configure device connectivity for standard HA pair on {{ primary_server }}
+    bigip_device_connectivity:
+      server: "{{ primary_server }}"
+      config_sync_ip: "{{ item.primary_address }}"
+      mirror_primary_address: "{{ item.primary_address }}"
+      unicast_failover:
+        - address: management-ip
+        - address: "{{ item.primary_address }}"    
+    delegate_to: localhost
+    with_items: "{{ spreadsheet_self_ips }}"
+    when: item.vlan == 'HA' 
+
+  - name: Configure device connectivity for standard HA pair on {{ secondary_server }}
+    bigip_device_connectivity:
+      server: "{{ secondary_server }}"
+      config_sync_ip: "{{ item.secondary_address }}"
+      mirror_primary_address: "{{ item.secondary_address }}"
+      unicast_failover:
+        - address: management-ip
+        - address: "{{ item.secondary_address }}"    
+    delegate_to: localhost
+    with_items: "{{ spreadsheet_self_ips }}"
+    when: item.vlan == 'HA' 
+
+  - name: Add trusts for all peer devices to {{ primary_server }}
+    bigip_device_trust:
+      server: "{{ primary_server }}"
+      peer_server: "{{ item.mgmt }}"
+      peer_hostname: "{{ item.hostname }}"
+      peer_password: "admin"
+    delegate_to: localhost
+    with_items: "{{ spreadsheet_system_settings }}"
+    when: item.primary == 'no' 
+
+  - name: Create a sync-failover device group with auto-sync enabled on {{ primary_server }}
+    bigip_device_group:
+      server: "{{ primary_server }}"
+      name: sync-failover
+      type: sync-failover
+      auto_sync: yes
+      state: present
+    delegate_to: localhost
+
+  - name: Add all the current devices to the "sync-failover" device group
+    bigip_device_group_member:
+      server: "{{ primary_server }}"
+      name: "{{ item.hostname }}"
+      device_group: sync-failover
+    delegate_to: localhost
+    with_items: "{{ spreadsheet_system_settings}}"
+
+  - name: Perform an initial sync of a device to a new device group (failing due to module issue - use tmsh instead)
+    bigip_configsync_actions:
+      server: "{{ primary_server }}"
+      device_group: sync-failover
+      sync_device_to_group: yes
+    delegate_to: localhost
+    ignore_errors: yes
+
+  - name: Use tmsh to sync the device_trust_group from secondary server
+    bigip_command:
+      server: "{{ secondary_server }}"
+      commands: run cm config-sync to-group device_trust_group      
+    delegate_to: localhost
+
+  - name: Use tmsh to sync the sync-failover group
+    bigip_command:
+      server: "{{ primary_server }}"
+      commands: run cm config-sync to-group sync-failover      
+    delegate_to: localhost
+
+  - name: disable BIG-IP setup utility
+    bigip_command:
+      server: "{{ item.hostname }}"
+      commands: 
+        - modify /sys global-settings gui-setup disabled
+        - save sys config
+    delegate_to: localhost
+    with_items: "{{ spreadsheet_system_settings}}"
+
+  - name: make {{ primary_server }} Active
+    bigip_command:
+      server: "{{ secondary_server }}"
+      commands: run sys failover standby
+    delegate_to: localhost
+
+  - name: Set floating self IPs on {{ primary_server }}
+    bigip_selfip:
+      server: "{{ primary_server}}"
+      name: "{{ item.floating }}"
+      address: "{{ item.floating }}"
+      netmask: "{{ item.netmask }}"
+      vlan: "{{ item.vlan }}"
+      traffic_group: "traffic-group-1"
+    delegate_to: localhost
+    with_items: "{{ spreadsheet_self_ips }}"
+    when: item.vlan != 'HA'
+
+  - name: Create pools
+    bigip_pool:
+      server: "{{ primary_server }}"
+      name: "{{ item.pool_name }}"
+      lb_method: "{{ item.lb_method }}"
+      slow_ramp_time: "120"
+      monitor_type: "{{ item.monitor_type }}"
+      monitors: "{{ item.monitors }}"
+      state: "{{ item.state }}"
+    delegate_to: localhost
+    with_items: "{{ spreadsheet_pools }}"
+
+  - name: Add nodes to pools
+    bigip_pool_member:
+      server: "{{ primary_server }}"
+      pool: "{{ item.pool_name }}"
+      host: "{{ item.pool_member }}"
+      port: "{{ item.pool_port }}"
+      state: "{{ item.state }}"
+    delegate_to: localhost
+    with_items: "{{ spreadsheet_pool_members }}"
+
+  - name: Add Standard virtual servers
+    bigip_virtual_server:
+      server: "{{ primary_server }}"
+      name: "{{ item.vs_name }}"
+      destination: "{{ item.vs_ip }}"
+      port: "{{ item.vs_port }}"
+      profiles: tcp
+      pool: "{{ item.pool_name }}"
+      state: "{{ item.state }}"
+    delegate_to: localhost
+    with_items: "{{ spreadsheet_virtual_servers }}"
+
+  - name: Add Automap SNAT
+    bigip_virtual_server:
+      server: "{{ primary_server }}"
+      name: "{{ item.vs_name }}"
+      snat: Automap
+    with_items: "{{ spreadsheet_virtual_servers }}"
+    when: item.automap == 'yes'
+
+  - name: Add HTTP profiles
+    bigip_command:
+      server: "{{ primary_server }}"
+      commands: modify ltm virtual {{ item.vs_name }} profiles add { {{ item.http_profile }} }
+    with_items: "{{ spreadsheet_virtual_servers }}"
+    when: item.http_profile != ''
+
+  - name: Add clientssl profiles
+    bigip_command:
+      server: "{{ primary_server }}"
+      commands: modify ltm virtual {{ item.vs_name }} profiles add { {{ item.clientssl_profile }} }
+    with_items: "{{ spreadsheet_virtual_servers }}"
+    when: item.clientssl_profile != '' 
+
+  - name: Add serverssl profiles
+    bigip_command:
+      server: "{{ primary_server }}"
+      commands: modify ltm virtual {{ item.vs_name }} profiles add { {{ item.serverssl_profile }} }
+    with_items: "{{ spreadsheet_virtual_servers }}"
+    when: item.serverssl_profile != ''
+
+  - name: Add routes
+    bigip_static_route:
+      server: "{{ primary_server }}"
+      name: "{{ item.name }}"
+      destination: "{{ item.destination }}"
+      netmask: "{{ item.netmask }}"
+      gateway_address: "{{ item.gateway_address }}"
+    delegate_to: localhost
+    with_items: "{{ spreadsheet_routes }}"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
