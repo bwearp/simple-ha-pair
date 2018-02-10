@@ -18,10 +18,7 @@ You will need f5-sdk >= 3.0.9, and a few other modules
 <br>
 $ pip install f5-sdk==3.0.9 bigsuds netaddr deepdiff request objectpath openpyxl
 
-
-
-
-
-
+You will need to download the files using git - see above for git installation<br>
+$ git clone https://github.com/bwearp/simple-ha-pair/ <br>
 
 
