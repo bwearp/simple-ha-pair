@@ -14,6 +14,7 @@ They will also need to be licensed and provisionned with ltm. It is possible to 
 For additional information on Ansible and F5 Ansible modules, please see:
 http://clouddocs.f5.com/products/orchestration/ansible/devel/index.html
 
+<br> The default admin password of admin has been used<br>
 
 <b>Ansible Control Machine Requirements</b>
 <br>I am using Centos, other OS are available<br><br>
