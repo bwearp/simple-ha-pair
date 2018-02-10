@@ -13,8 +13,8 @@ http://clouddocs.f5.com/products/orchestration/ansible/devel/index.html
 
 
 <b>Ansible Control Machine Requirements</b>
-<br>I am using Centos, other OS are available<br>
-It will be easiest to carry out the below as the roor user<br><br>
+<br>I am using Centos, other OS are available<br><br>
+<b>Note: It will be easiest to carry out the below as the root user</b><br><br>
 You will need Python 2.7+<br><br>
 $ yum install python
 <br>
