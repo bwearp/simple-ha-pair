@@ -45,8 +45,8 @@ $ ansible-playbook simple-ha-pair.yml
 
 NOTES:
 
-The HA VLAN must be called 'HA'
-The settings where yes/no are required must be yes/no and not YES/NO or Yes/No
+The HA VLAN must be called 'HA'<br>
+The settings where yes/no are required must be yes/no and not YES/NO or Yes/No<br>
 One device must have primary=yes and the other must have primary=no
 
 I have added only Standard Virtual Servers with http, client & server ssl profiles, but hopefully it is pretty obvious from the simple-ha-pair.yml playbook how to add in others.
