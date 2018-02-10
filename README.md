@@ -4,7 +4,9 @@ Using ansible and an xlsx spreadsheet to set up an HA pair
 Requirements:<br>
 
 <b>BIG-IP Requirements</b><br>
-The BIG-IP devices will need to have their management IP, netmask, and management gaeway configured, as well as be licensed and provisionned with ltm. It is possible to both provision and license the devices with ansible but it is not within the remit of this project.
+The BIG-IP devices will need to have their management IP, netmask, and management gateway configured<br>
+
+They will also need to be licensed and provisionned with ltm. It is possible to both provision and license the devices with ansible but it is not within the remit of this project.
 
 For additional information on Ansible and F5 Ansible modules, please see:
 http://clouddocs.f5.com/products/orchestration/ansible/devel/index.html
