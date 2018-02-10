@@ -16,7 +16,7 @@ http://clouddocs.f5.com/products/orchestration/ansible/devel/index.html
 <br>I am using Centos, other OS are available<br><br>
 <b>Note: It will be easiest to carry out the below as the root user</b><br><br>
 You will need Python 2.7+<br>
-<font face="courier new" color="green">$ yum install python</font><br>
+$ yum install python<br>
 <br>
 You will need pip<br>
 $ curl 'https://bootstrap.pypa.io/get-pip.py' > get-pip.py && sudo python get-pip.py
