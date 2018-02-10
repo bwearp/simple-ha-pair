@@ -25,6 +25,6 @@ You will need to create and copy a root ssh-key to the bigip devices<br>
 $ su<br>
 $ ssh-keygen <br>
 Accept the defaults<br>
-$ ssh-copy-id -i /root/.ssh/id_rsa.pub root@<bigip-management-ip><br>
+$ ssh-copy-id -i /root/.ssh/id_rsa.pub root@\<bigip-management-ip\><br>
 
 
