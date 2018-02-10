@@ -145,7 +145,6 @@
       auto_sync: yes
       state: present
 
-
   - name: Add all the current devices to the "sync-failover" device group
     bigip_device_group_member:
       server: "{{ primary_server }}"
@@ -158,12 +157,10 @@
       server: "{{ secondary_server }}"
       commands: run cm config-sync to-group device_trust_group      
 
-
   - name: Use tmsh to sync the sync-failover group
     bigip_command:
       server: "{{ primary_server }}"
       commands: run cm config-sync to-group sync-failover      
-
 
   - name: disable BIG-IP setup utility
     bigip_command:
@@ -177,7 +174,6 @@
     bigip_command:
       server: "{{ secondary_server }}"
       commands: run sys failover standby
-
 
   - name: Set floating self IPs on {{ primary_server }}
     bigip_selfip:
