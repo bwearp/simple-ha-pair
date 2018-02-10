@@ -42,6 +42,8 @@ You will need to create and copy a root ssh-key to <em>BOTH</em> the bigip devic
 $ ssh-keygen <br>
 Accept the defaults<br>
 $ ssh-copy-id -i /root/.ssh/id_rsa.pub root@\<bigip-<em><b>management-ip</b></em>\><br>
+Example:<br>
+$ ssh-copy-id -i /root/.ssh/id_rsa.pub root@192.168.1.203<br>
 
 You will need to download the files using git - see above for git installation<br>
 $ git clone https://github.com/bwearp/simple-ha-pair/ <br>
