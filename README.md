@@ -8,9 +8,9 @@ You will need pip<br>
 curl 'https://bootstrap.pypa.io/get-pip.py' > get-pip.py && sudo python get-pip.py
 <br><br>
 You will need ansible 2.5+ <br> 
-$ pip install ansible <br><br>
+$ pip install ansible <br>
 
-If it is not yet available, which it wasn't at the time of writing,  please download directly from git <br>
+If 2.5+ is not yet available, which it wasn't at the time of writing,  please download directly from git <br>
 $ yum install git <br>
 $ pip install --upgrade git+https://github.com/ansible/ansible.git<br>
 <br>
