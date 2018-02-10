@@ -188,7 +188,7 @@
 
   - name: disable BIG-IP setup utility
     bigip_command:
-      server: "{{ item.hostname }}"
+      server: "{{ item.mgmt }}"
       commands: 
         - modify /sys global-settings gui-setup disabled
         - save sys config
@@ -285,19 +285,3 @@
       gateway_address: "{{ item.gateway_address }}"
     delegate_to: localhost
     with_items: "{{ spreadsheet_routes }}"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
