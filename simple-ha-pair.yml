@@ -16,7 +16,7 @@
   - name: set primary_server mgmt IP variable
     set_fact: 
       primary_server: "{{ item.mgmt }}" 
-    with_items: "{{ spreadsheet_system_settings }}"
+    with_items: "{{ spreadsheet_mgmt }}"
     when: item.primary  == "yes" 
 
   - debug:
@@ -25,34 +25,46 @@
   - name: set secondary_server mgmt IP variable
     set_fact: 
       secondary_server: "{{ item.mgmt }}" 
-    with_items: "{{ spreadsheet_system_settings }}"
-    when: item.primary == "no" 
+    with_items: "{{ spreadsheet_mgmt }}"
+    when: item.primary != "yes" 
 
   - debug:
       msg: Secondary Server mgmt IP is {{ secondary_server }}
 
-  - name: set hostnames
+  - name: set hostnames on {{ primary_server }} and {{ secondary_server }}
     bigip_hostname:
       server: "{{ item.mgmt }}"
       hostname: "{{ item.hostname }}"
-    with_items: "{{ spreadsheet_system_settings }}"
+    with_items: "{{ spreadsheet_mgmt }}"
 
-  - name: set dns
+  - name: set dns on {{ primary_server }} and {{ secondary_server }}
     bigip_device_dns:
-      server: "{{ item.mgmt }}"
+      server: "{{ item[0] }}"
       name_servers: 
-        - "{{ item.dns1 }}"
-        - "{{ item.dns2 }}"
-    with_items: "{{ spreadsheet_system_settings }}"
+        - "{{ item[1].dns1 }}"
+        - "{{ item[1].dns2 }}"
+    with_nested: 
+      - [ "{{ primary_server }}", "{{ secondary_server }}" ]
+      - "{{ spreadsheet_system_settings}}"
 
-  - name: set ntp
+  - name: set ntp on {{ primary_server }} and {{ secondary_server }}
     bigip_device_ntp:
-      server: "{{ item.mgmt }}"
+      server: "{{ item[0] }}"
       ntp_servers:
-        - "{{ item.ntp1 }}"
-        - "{{ item.ntp2 }}"
-        - "{{ item.ntp3 }}"
-    with_items: "{{ spreadsheet_system_settings }}"
+        - "{{ item[1].ntp1 }}"
+        - "{{ item[1].ntp2 }}"
+        - "{{ item[1].ntp3 }}"
+    with_nested: 
+      - [ "{{ primary_server }}", "{{ secondary_server }}" ]
+      - "{{ spreadsheet_system_settings}}"
+
+  - name: Add a remote syslog server to log to {{ primary_server }} and {{ secondary_server }}
+    bigip_remote_syslog:
+      server: "{{ item[0] }}"
+      remote_host: "{{ item[1].syslog}}"
+    with_nested: 
+      - [ "{{ primary_server }}", "{{ secondary_server }}" ]
+      - "{{ spreadsheet_system_settings}}"
 
   - name: Set VLANS on all devices
     bigip_vlan:
@@ -151,7 +163,7 @@
       peer_server: "{{ item.mgmt }}"
       peer_hostname: "{{ item.hostname }}"
       peer_password: "admin"
-    with_items: "{{ spreadsheet_system_settings }}"
+    with_items: "{{ spreadsheet_mgmt }}"
     when: item.primary == 'no' 
 
   - name: Create a sync-failover device group with auto-sync enabled on {{ primary_server }}
@@ -167,7 +179,7 @@
       server: "{{ primary_server }}"
       name: "{{ item.hostname }}"
       device_group: sync-failover
-    with_items: "{{ spreadsheet_system_settings}}"
+    with_items: "{{ spreadsheet_mgmt}}"
 
   - name: Use tmsh to sync the device_trust_group from secondary server
     bigip_command:
@@ -185,7 +197,7 @@
       commands: 
         - modify /sys global-settings gui-setup disabled
         - save sys config
-    with_items: "{{ spreadsheet_system_settings}}"
+    with_items: "{{ spreadsheet_mgmt}}"
 
   - name: make {{ primary_server }} Active
     bigip_command:
@@ -270,4 +282,4 @@
       destination: "{{ item.destination }}"
       netmask: "{{ item.netmask }}"
       gateway_address: "{{ item.gateway_address }}"
-    with_items: "{{ spreadsheet_routes }}"
+    with_items: "{{ spreadsheet_routes }}"  
