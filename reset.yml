@@ -18,4 +18,4 @@
       reset: yes
       save: yes
       server: "{{ item.mgmt }}"
-    with_items: "{{ spreadsheet_system_settings }}"
+    with_items: "{{ spreadsheet_mgmt }}"
